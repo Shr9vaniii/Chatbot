@@ -108,30 +108,7 @@ def _normalize_text(doc):
         print(f"⚠️ Normalization failed : {e}")
     return doc
 
-'''def ingest_text(file_path):
-    loader = TextLoader(file_path, encoding="utf-8")
-    documents = loader.load()
-    for doc in documents:
-        doc.metadata["source"] = os.path.basename(file_path)
 
-    documents = _normalize_docs(documents, file_path)
-
-    splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
-    chunks = splitter.split_documents(documents)
-    return FAISS.from_documents(chunks, embeddings)
-
-
-def ingest_pdf(file_path):
-    loader = PyPDFLoader(file_path)
-    documents = loader.load()
-    for doc in documents:
-        doc.metadata["source"] = os.path.basename(file_path)
-
-    documents = _normalize_docs(documents, file_path)
-
-    splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
-    chunks = splitter.split_documents(documents)
-    return FAISS.from_documents(chunks, embeddings)'''
 
 def ingest_text_for_college(
         title: str,
@@ -239,39 +216,4 @@ def delete_pdf_or_text_for_college(
 
     collection.delete(where={"source":pdf_name})
 
-# -----------------------------
-# Auto-ingest Folder
-# -----------------------------
-'''def auto_ingest_data_folder(folder_path="data"):
-    """Ingest all PDFs/TXT files in a folder into one FAISS retriever."""
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    abs_folder_path = os.path.join(current_dir, folder_path)
 
-    if not os.path.exists(abs_folder_path):
-        raise ValueError(f"❌ Folder not found: {abs_folder_path}")
-
-    files = [f for f in os.listdir(abs_folder_path) if f.endswith((".txt", ".pdf"))]
-    if not files:
-        raise ValueError("❌ No valid .txt or .pdf files found in data folder")
-
-    print(f"📂 Found raw files in {os.path.abspath(abs_folder_path)}: {files}")
-
-    vectorstore = None
-    for fname in files:
-        fpath = os.path.join(abs_folder_path, fname)
-        if fname.endswith(".txt"):
-            print(f"➡️ Ingesting TXT: {fname}")
-            vs = ingest_text(fpath)
-        elif fname.endswith(".pdf"):
-            print(f"➡️ Ingesting PDF: {fname}")
-            vs = ingest_pdf(fpath)
-        else:
-            continue
-
-        if vectorstore is None:
-            vectorstore = vs
-        else:
-            vectorstore.merge_from(vs)
-
-    print(f"✅ Ingested {len(files)} files: {files}")
-    return vectorstore.as_retriever(search_kwargs={"k": 5})'''
